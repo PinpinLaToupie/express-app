@@ -1,59 +1,57 @@
 const express = require("express");
-
 const app = express();
 
-const port = 5000;
+const welcome = (req, res) => {
+  res.send("Welcome to my favourite movie list");
+};
 
-const movies = [
-  {
-    id: 1,
-    title: "Citizen Kane",
-    director: "Orson Wells",
-    year: "1941",
-    color: false,
-    duration: 120,
-  },
-  {
-    id: 2,
-    title: "The Godfather",
-    director: "Francis Ford Coppola",
-    year: "1972",
-    color: true,
-    duration: 180,
-  },
-  {
-    id: 3,
-    title: "Pulp Fiction",
-    director: "Quentin Tarantino",
-    year: "1994",
-    color: true,
-    duration: 180,
-  },
-];
+app.get("/", welcome);
 
-app.listen(port, (err) => {
-  if (err) {
-    console.error("Something bad happened");
-  } else {
-    console.log(`Server is listening on ${port}`);
-  }
-});
+  const movies = [
+    {
+      id: 1,
+      title: "Citizen Kane",
+      director: "Orson Wells",
+      year: "1941",
+      color: false,
+      duration: 120,
+    },
+    {
+      id: 2,
+      title: "The Godfather",
+      director: "Francis Ford Coppola",
+      year: "1972",
+      color: true,
+      duration: 180,
+    },
+    {
+      id: 3,
+      title: "Pulp Fiction",
+      director: "Quentin Tarantino",
+      year: "1994",
+      color: true,
+      duration: 180,
+    },
+  ];
 
-app.get("/", (req, res) => {
-    res.send("Welcome to my favourite movie list");
-  });
+  const getMovies = (req, res) => {
+    res.json(movies);
+  };
   
-  app.get("/api/movies", (req, res) => {
-    res.status(200).json(movies);
-  });
+  app.get("/api/movies", getMovies);
   
-  app.get("/api/movies/:id", (req, res) => {
-    const movieId = parseInt(req.params.id);
-    const movie = movies.find((m) => m.id === movieId);
+  const getMovieById = (req, res) => {
+    const id = parseInt(req.params.id);
   
-    if (movie) {
-      res.status(200).json(movie);
+    const movie = movies.find((movie) => movie.id === id);
+  
+    if (movie != null) {
+      res.json(movie);
     } else {
-      res.status(404).send("Not Found");
+      res.sendStatus(404);
     }
-  });
+  };
+  
+  app.get("/api/movies/:id", getMovieById);
+  
+  module.exports = app;
